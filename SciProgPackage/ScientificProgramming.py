@@ -9,7 +9,7 @@ import scipy
 from numpy import genfromtxt
 import pandas as pd
 
-class ScientificProgramming:
+class SciProg:
     #pass
 
     
@@ -25,27 +25,35 @@ class ScientificProgramming:
                 if j >= a:
                     break
                 arr = arr + [kont]
-        return(arr)
+        currentVal=1
+        cutoffs=[]
+        for i in range(0,len(arr)):
+          if (arr[i]>currentVal):
+            cutoffs.append(i)
+            currentVal+=1    
+        return arr, cutoffs
         
-    """ #TEST
+    """ #TEST1
     dat = np.arange(1,11)
-    discrete_dat = atributeDiscretizeEF(dat, 3)
+    discrete_dat, cutoff = atributeDiscretizeEF(dat, 3)
     print("dat: ", dat)
     print("discrete_dat: ", discrete_dat)
+    print("cutoff: ", cutoff)
      """
 
-
     def datasetDiscretizeEF(data, n_bins):
-        for i in range(0,len(data[1,])):
-            discrete = ScientificProgramming.atributeDiscretizeEF(data[:,i],n_bins)
-            print(discrete)
-            col=discrete.copy()
-            data[:,i]=col
-        return data
-    """ #TEST
-    data=np.random.rand(10,10)
-    datasetDiscretizeEF(data,5)
-    print("dat: ",data) """
+      rowNumber=data.shape[0]
+      colNumber=data.shape[1]
+      discrete, cutoff = SciProg.atributeDiscretizeEF(data.flatten().tolist(),n_bins)
+      print(cutoff)
+      arr = np.array(discrete)
+      shape = (rowNumber,colNumber)
+      arr=arr.reshape(shape)#.tolist()
+      return arr, cutoff
+    #TEST2
+    """data=np.random.randint(10,size=(10,10))
+    print(data)
+    datasetDiscretizeEF(data,5)"""
 
 
     def atributeDiscretizeEW(atribute, n_bins):
@@ -55,7 +63,7 @@ class ScientificProgramming:
       discrete = np.digitize(atribute, cutoffs, right=True)
       return discrete, cutoffs
 
-    """ #TEST
+    """ #TEST3
     dat = np.arange(1,11)
     discrete_dat, cutoff = atributeDiscretizeEW(dat, 3)
     print("dat: ", dat)
@@ -68,61 +76,38 @@ class ScientificProgramming:
 
     def datasetDiscretizeEW(data, n_bins):
       for i in range(0,len(data[1,])):
-        discrete, cutoff = ScientificProgramming.atributeDiscretizeEW(data[:,i],n_bins)
+        discrete, cutoff = SciProg.atributeDiscretizeEW(data[:,i],n_bins)
         data[:,i]=discrete
       return data
 
 
-    """ #TEST
+    """ #TEST4
     data=np.random.rand(10,10)
     datasetDiscretizeEW(data,5)
     print("dat: ",data)
      """
 
     ######################################Metric Calculation##################################
-    def datasetVariance(data):
-      arr=[]
-      for i in range(0,len(data[1,])):
-        val = np.var(data[:,i])
-        arr.append(val)
-      return arr
-    """ 
-    #TEST
-    data=np.random.rand(10,10)
-    varList=datasetVariance(data)
-    print("variances: ",varList)
-     """
+    def variance(vector):
+      return np.var(vector)
+
+    """#TEST5
+    numberCol=np.random.rand(10)
+    variance(numberCol)"""
+    
 
 
+    def auc(vector, booleanVector):
+      return(roc_auc_score(booleanVector,vector))
 
-    def atributesAUC(data, threshold):
-      for i in range(0,len(data[0,:])):
-        if(data[i,0]<=threshold):
-          data[i,0]=0
-        else:
-          data[i,0]=1
-      data=data.astype(int)
-      return(roc_auc_score(data[:,0], data[:,1]))
-
-    """ #TEST
+    """#TEST6
     numberCol=np.random.rand(10)
     numberCol
     boolCol=np.random.randint(0,2,size=10)
     boolCol
-    data=np.column_stack((numberCol,boolCol))
-    data
 
-    result=atributesAUC(data,0.4)
-    print(result)
-     """
-
-
-    def datasetEntropy(data):
-      arr=[]
-      for i in range(0,len(data[1,])):
-        val = ScientificProgramming.entropy(data[:,i])
-        arr.append(val)
-      return arr
+    result=auc(numberCol,boolCol)
+    print(result)"""
 
 
     def entropy(arr):
@@ -145,7 +130,7 @@ class ScientificProgramming:
         total=total-i*math.log(i, 2.0)
       return total
 
-    """ #TEST
+    """ #TEST7
     numberCol=np.random.rand(10)
     numberCol
     boolCol=np.random.randint(0,2,size=10)
@@ -157,12 +142,38 @@ class ScientificProgramming:
     print(val) """
 
 
+    #AUXILIAR FUNCTION
+    def datasetVariance(data):
+      arr=[]
+      for i in range(0,len(data[1,])):
+        val = np.var(data[:,i])
+        arr.append(val)
+      return arr
+    """ 
+    #TEST8
+    data=np.random.rand(10,10)
+    varList=datasetVariance(data)
+    print("variances: ",varList)
+     """
+    
+    #AUXILIAR FUNCTION
+    def datasetEntropy(data):
+      arr=[]
+      for i in range(0,len(data[1,])):
+        val = SciProg.entropy(data[:,i])
+        arr.append(val)
+      return arr
+
+
+    
+
+
     ######################################Normalization and Estandarization##################################
     def variableNormalization(v):
       vnorm = (v - np.amin(v)) / (np.amax(v) - np.amin(v))
       return(vnorm)
 
-    """ #TEST
+    """ #TEST9
     data=variableNormalization(np.array([1,2,3,4,5,5,65,4,3]))
     print(data) """
 
@@ -170,21 +181,29 @@ class ScientificProgramming:
       vest = (v-np.mean(v)) / np.std(v)
       return(vest)
       
-    """ #TEST
+    """ #TEST10
     data=variableEstandarization(np.array([1,2,3,4,5,5,65,4,3]))
     print(data)
      """
-
+    
 
     def datasetNormalization(data):
-      arr=[]
+      rowNumber=data.shape[0]
+      colNumber=data.shape[1]
+      result = SciProg.variableNormalization(data.flatten().tolist())
+      arr = np.array(result)
+      shape = (rowNumber,colNumber)
+      arr=arr.reshape(shape)#.tolist()
+      return arr
+      
+      """arr=[]
       for i in range(0,len(data[1,])):
-        data[:,i] = ScientificProgramming.variableNormalization(data[:,i])
+        data[:,i] = SciProg.variableNormalization(data[:,i])
         print(data)
-      return data
+      return data"""
 
     """ 
-    #TEST
+    #TEST11
     data=np.random.rand(10,10)
     a=np.array([1,2,3,4,5,5,65,4,3])
     b=np.array([3,2,6,4,99,5,25,42,1])
@@ -195,14 +214,22 @@ class ScientificProgramming:
 
 
     def datasetEstandarization(data):
-      arr=[]
+      rowNumber=data.shape[0]
+      colNumber=data.shape[1]
+      result = SciProg.variableEstandarization(data.flatten().tolist())
+      arr = np.array(result)
+      shape = (rowNumber,colNumber)
+      arr=arr.reshape(shape)#.tolist()
+      return arr
+      
+      """arr=[]
       for i in range(0,len(data[1,])):
-        data[:,i] = ScientificProgramming.variableEstandarization(data[:,i])
+        data[:,i] = SciProg.variableEstandarization(data[:,i])
         print(data)
-      return data
+      return data"""
 
       
-    """ #TEST
+    """ #TEST12
     data=np.random.rand(10,10)
     a=np.array([1,2,3,4,5,5,65,4,3])
     b=np.array([3,2,6,4,99,5,25,42,1])
@@ -212,72 +239,77 @@ class ScientificProgramming:
 
 
     ######################################Filtering based on Metrics##################################
-    def filterVariance(data, var):
-      
-      #getting vector of variancess
-      vec=ScientificProgramming.datasetVariance(data)
-      columnsToDelete=[]
-      for i in range(0,len(vec)):
-        if(var>=vec[i]):
-          columnsToDelete.append(1)
-        else:
-          columnsToDelete.append(0)
+    
+    def filterDataset(data, threshold, filterType):
+      if(filterType=="variance"):
+        vec=SciProg.datasetVariance(data)
+        print("Variances list"+str(vec))
+        columnsToDelete=[]
+        for i in range(0,len(vec)):
+          if(threshold<=vec[i]):
+            columnsToDelete.append(1)
+          else:
+            columnsToDelete.append(0)
 
-      print(columnsToDelete)
-      #deleting columns
-      for i in range(len(vec)-1,-1,-1):
-        print(i)
-        if(np.var(columnsToDelete) == 0 and columnsToDelete[i]==1):
-          data=[]
-        elif(columnsToDelete[i]==1):
-          data = np.delete(data, 0, i)
-          #data = np.delete(a, 0, i)
+        #deleting columns
+        for i in range(len(vec)-1,-1,-1):
+          if(np.var(columnsToDelete) == 0 and columnsToDelete[i]==1):
+            data=[]
+          elif(columnsToDelete[i]==1):
+            data = np.delete(data, i, 1)
+        return(data)
 
-      return(data)
+      elif(filterType=="entropy"):
+        vec=SciProg.datasetEntropy(data)
+        print("Entropy list"+str(vec))
+        columnsToDelete=[]
+        for i in range(0,len(vec)):
+          if(threshold<=vec[i]):
+            columnsToDelete.append(1)
+          else:
+            columnsToDelete.append(0)
+
+        #deleting columns
+        for i in range(len(vec)-1,-1,-1):
+          if(np.var(columnsToDelete) == 0 and columnsToDelete[i]==1):
+            data=[]
+          elif(columnsToDelete[i]==1):
+            data = np.delete(data, i, 1)
+        return(data)
+      else:
+        print("You may have written down the filter type incorrectly.")
 
 
-    """ #TEST
+    """#TEST13
     data=np.random.rand(10,10)
     a=np.array([1,2,3,4,5,5,65,4,3])
-    b=np.array([3,2,6,4,99,5,25,42,1])
-    data=np.column_stack((a,b))
-    val=filterVariance(np.array(data.astype(float)),10000)
-    print(val)
-
-
-    data=np.random.rand(10,10)
-    a=np.array([1,2,3,4,5,5,65,4,3])
-    b=np.array([3,2,6,4,99,5,25,42,1])
-    data=np.column_stack((a,b))
-    print(np.var(data[:,0]))
-    print(np.var(data[:,1])) """
-
+    b=np.array([1,2,3,4,5,56,65,4,3])
+    c=np.array([3,2,6,4,99,5,25,42,1])
+    data=np.column_stack((a,b,c))
+    print(data)
+    val=filterDataset(np.array(data.astype(float)),10000,"variance")
+    print(val)"""
 
 
 
     ######################################Correlation calculus by pairs##################################
     def atributesCorrelation(data):
-      return scipy.stats.spearmanr(data[:,0], data[:,1])
+      return scipy.stats.spearmanr(data)
 
-    """ #TEST
+    """ #TEST14
     data=np.random.rand(10,10)
     a=np.array([1,2,3,4,5,5,65,4,3])
     b=np.array([3,2,6,4,99,5,25,42,1])
-    data=np.column_stack((a,b))
+    b=np.array([3,4,4,4,9,5,25,42,1])
+    data=np.column_stack((a,b,c))
     norm=atributesCorrelation(data.astype(float))
     print(norm) """
 
 
 
     ######################################Plots for AUC and Mutual Information##################################
-    def plotAUC(data,threshold):
-      for i in range(0,len(data[0,:])):
-        if(data[i,0]<=threshold):
-          data[i,0]=0
-        else:
-          data[i,0]=1
-      data=data.astype(int)
-      lr_fpr, lr_tpr, _ = roc_curve(data[:,0], data[:,1])
+    def plotAUC(vector,booleanVector):
+      lr_fpr, lr_tpr, _ = roc_curve(booleanVector, vector)
       # plot the roc curve for the model
       plt.plot(lr_fpr, lr_tpr, marker='.', label='Curve')
       # axis labels
@@ -288,17 +320,14 @@ class ScientificProgramming:
       # show the plot
       plt.show()
 
-    """ #TEST
+    """#TEST15
     numberCol=np.random.rand(10)
     numberCol
     boolCol=np.random.randint(0,2,size=10)
     boolCol
-    data=np.column_stack((numberCol,boolCol))
-    data
 
-    result=plotAUC(data,0.4)
-    print(result)
-     """
+    result=plotAUC(numberCol,boolCol)
+    print(result)"""
 
 
 
@@ -308,6 +337,7 @@ class ScientificProgramming:
       plt.xlabel('X - value')
       plt.ylabel('Y - value')
       plt.scatter(data[:,0], data[:,1])
+      plt.show()
 
     """ data=np.random.rand(10,2)
     plotMutualInformation(data) """
@@ -318,15 +348,24 @@ class ScientificProgramming:
 
     #TEST
     def datasetRead(root):
-      my_data = genfromtxt(root, delimiter=',')
-      return my_data
+      try:
+        my_data = genfromtxt(root, delimiter=',')
+        return my_data
+      except:
+        print("File not in selected root directory, or invalid format.")
 
     """ print(datasetRead('/content/myData.csv'))
     data=datasetRead('/content/myData.csv') """
 
     def writeDatasetCSV(data, root):
-      data=pd.DataFrame(data)
-      data.to_csv('/content/myData2.csv', sep=',')
+      try:
+        data=pd.DataFrame(data)
+        data.to_csv(root, sep=',')
+        print("Data was written in the following directory: "+str(root))
+      except:
+        print("error, could not write csv file.")
 
     #Test
     # writeDatasetCSV(data, '/content/myData2.csv')
+    
+    

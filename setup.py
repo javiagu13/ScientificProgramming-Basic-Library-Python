@@ -1,19 +1,39 @@
-from setuptools import setup
+# Always prefer setuptools over distutils
+from setuptools import setup, find_packages
 
+# To use a consistent encoding
+from codecs import open
+from os import path
+
+# The directory containing this file
+HERE = path.abspath(path.dirname(__file__))
+
+# Get the long description from the README file
+with open(path.join(HERE, 'README.md'), encoding='utf-8') as f:
+    long_description = f.read()
+
+# This call to setup() does all the work
 setup(
-   name='ScientificProgramming',
-   version='0.0.1',
-   author='Javier Aguirre',
-   author_email='javiagu13@gmail.com',
-   packages=['C:/Users/Javi/Documents/GitHub/ScientificProgramming-Basic-Library-Python'],
-   url='C:/Users/Javi/Desktop',
-   license='LICENSE.txt',
-   description='This package includes some basic functions to work with scientific programming',
-   long_description=open('src/README.txt').read(),
-   install_requires=[
-      "scipy",
-      "numpy",
-      "sklearn",
-      "matplotlib" 
-   ],
+    name="SciProgPackage",
+    version="1.2.0",
+    description="Demo library",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    author="Javier Aguirre",
+    author_email="javiregistros71@gmail.com",
+    license="MIT",
+    classifiers=[
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: MIT License",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Operating System :: OS Independent"
+    ],
+    packages=["SciProgPackage"],
+    include_package_data=True,
+    install_requires=["numpy","scikit-learn","matplotlib","pandas"]
 )
