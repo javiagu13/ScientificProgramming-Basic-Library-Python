@@ -15,8 +15,6 @@ https://pypi.org/project/SciProgPackage/1.2.0/
 
 Testing and Usage instructions:
 
-In order to install the package pip install it with in a python terminal.
-
 In order to import the library simply on the top of the file import it as follows:
 
 ```
@@ -35,9 +33,22 @@ As an example:
 dat = np.arange(1,11)
 discrete_dat, cutoff = sp.atributeDiscretizeEF(dat, 3)
 ```
+---------------------------------------------------------------------------
+In order to have further explanation, download the following file from the repository:
+
+```
+pyVignette.html
+```
 ---------------------------------------------------------------------------------
 
 Finally in order to run all the possible tests here is a code to test it:
+
+It is the same code as contained in main.py, so in case you do not want to copy the content
+simply download main.py file and run on the command prompt:
+
+```
+python main.py
+```
 
 ```
 # -*- coding: utf-8 -*-
@@ -291,4 +302,5 @@ print(sp.writeDatasetCSV(data,'newData.csv'))
 print("--------------------------")
 
 ```
+
 
